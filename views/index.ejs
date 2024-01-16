@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Chat</title>
+
+    <style>
+        body {
+            background-color: #3b3b3b;
+            color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <h2>Faça seu agendamento</h2>
+
+    <div>
+        <input type="text" name="" id="input-data">
+        <button onclick="handleForm()">Agendar horário</button>
+    </div>
+
+    <hr>
+
+
+    <p id="resultado"></p>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js" integrity="sha512-tE1z+95+lMCGwy+9PnKgUSIeHhvioC9lMlI7rLWU0Ps3XTdjRygLcy4mLuL0JAoK4TLdQEyP0yOl/9dMOqpH/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    let socket = io('http://localhost:3001')
+    socket.emit('welcome', { nome: 'Rafael Candido' })
+
+    let input = document.getElementById('input-data')
+
+    let resultado = document.getElementById('resultado')
+
+    socket.on('resultado', (data) => {
+
+        console.log(data)
+        resultado.innerHTML = data;
+    })
+
+    function handleForm(e) {
+       if(input.value === '') return
+        socket.emit('agendar', input.value)
+        input.value = ''
+        input.focus()
+    }
+
+</script>
+</html>
