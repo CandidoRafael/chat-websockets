@@ -13,38 +13,49 @@
     </style>
 </head>
 <body>
-    <h2>Faça seu agendamento</h2>
+    <h1>Chat</h1>
+    <div id="chat">
 
-    <div>
-        <input type="text" name="" id="input-data">
-        <button onclick="handleForm()">Agendar horário</button>
     </div>
-
-    <hr>
-
-
-    <p id="resultado"></p>
+    <br>
+    <input type="text" name="" id="msg" placeholder="Digite sua mensagem...">
+    <input type="text" name="" id="username" placeholder="Usuário">
+    <button onclick="send()">Submit</button>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js" integrity="sha512-tE1z+95+lMCGwy+9PnKgUSIeHhvioC9lMlI7rLWU0Ps3XTdjRygLcy4mLuL0JAoK4TLdQEyP0yOl/9dMOqpH/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
+    // Socket IO Connection
     let socket = io('http://localhost:3001')
-    socket.emit('welcome', { nome: 'Rafael Candido' })
-
-    let input = document.getElementById('input-data')
-
-    let resultado = document.getElementById('resultado')
-
-    socket.on('resultado', (data) => {
-
-        console.log(data)
-        resultado.innerHTML = data;
+    
+    // Fields Elements
+    let msgField = document.querySelector('#msg');
+    let userField = document.querySelector('#username');
+    
+    // Chat Elements
+    
+    function showMessage(data) {
+        let chat = document.querySelector('#chat');
+        let message = document.createElement('p');
+        message.innerHTML = data.username  + ': ' + data.msg;
+        chat.append(message);
+    }
+    
+    function clearFields() {
+        msgField.value = ''
+        msgField.focus()
+    }
+    
+    socket.on('disconnect', () => {
+        console.log('Disconectado')
+    })
+    
+    socket.on('showMsg', (data) => {
+        showMessage(data);
+        clearFields() 
     })
 
-    function handleForm(e) {
-       if(input.value === '') return
-        socket.emit('agendar', input.value)
-        input.value = ''
-        input.focus()
+    function send() {
+        socket.emit('msg', { msg: msgField.value, username: userField.value })
     }
 
 </script>

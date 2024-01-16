@@ -5,13 +5,13 @@ const http = require('http').createServer(app);
 let io = require('socket.io')(http);
 
 io.on('connection', (socket) => {
-    socket.on('welcome', (data) => {
-        console.log(data);
-    })
 
-    socket.on('agendar', (data) => {
-        console.log(data)
-        socket.emit('resultado', data + ' Agendado')
+    // socket.on('disconnect', () => {
+    //     console.log('X desconectou ', + socket.id)
+    // })
+
+    socket.on('msg', (data) => {
+        io.emit('showMsg', data);
     })
 })
 
@@ -19,8 +19,8 @@ app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
     res.render('index');
-})
+});
 
 http.listen(3001, () => {
-    console.log('Servidor Node Rodando!!!')
-})
+    console.log('Servidor Node Rodando!!!');
+});
